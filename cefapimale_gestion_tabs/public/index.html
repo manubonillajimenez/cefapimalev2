@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>CEFAPIMALE GESTIÓN - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --rojo: #b30000;
+      --amarillo: #ffcc00;
+      --gris-fondo: #f5f5f5;
+      --gris-borde: #dddddd;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--gris-fondo);
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      background: linear-gradient(90deg, var(--rojo), var(--amarillo), var(--rojo));
+      color: white;
+      padding: 0.8rem 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    main {
+      padding: 0.75rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #ffffff;
+      padding: 0.8rem;
+      margin-bottom: 0.9rem;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.08);
+    }
+    label {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    input, select, button, textarea {
+      width: 100%;
+      padding: 0.55rem;
+      margin-top: 0.25rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      background: var(--rojo);
+      color: #fff;
+      font-weight: bold;
+      margin-top: 0.6rem;
+      min-height: 44px;
+      border-radius: 6px;
+    }
+    button:hover {
+      opacity: 0.95;
+    }
+    .btn-sec {
+      background: #555;
+    }
+    .row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .row > div {
+      flex: 1;
+      min-width: 280px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.5rem;
+    }
+    .stat-box {
+      background: #fff7e0;
+      border-radius: 8px;
+      padding: 0.6rem;
+      border: 1px solid #f0e0a0;
+      text-align: center;
+    }
+    .stat-box strong {
+      display: block;
+      font-size: 1.2rem;
+    }
+    .stat-box span {
+      font-size: 0.8rem;
+      color: #555;
+    }
+    .user-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .user-info h2 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.1rem;
+    }
+    .user-info p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-left: 0.25rem;
+      background: #eee;
+    }
+    .tag-admin {
+      background: var(--amarillo);
+    }
+    .tag-usuario {
+      background: #cce5ff;
+    }
+    .tasks-list {
+      max-height: 420px;
+      overflow-y: auto;
+      border: 1px solid var(--gris-borde);
+      border-radius: 8px;
+      padding: 0.5rem;
+      background: #fff;
+    }
+    .task-item {
+      border-bottom: 1px solid #eee;
+      padding: 0.5rem 0;
+      font-size: 0.88rem;
+    }
+    .task-item:last-child {
+      border-bottom: none;
+    }
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .task-text {
+      font-weight: bold;
+    }
+    .task-meta {
+      font-size: 0.78rem;
+      color: #555;
+      margin-top: 0.1rem;
+    }
+    .status-select {
+      width: auto;
+      font-size: 0.8rem;
+      min-width: 120px;
+      padding: 0.3rem;
+    }
+    .badge-status {
+      display: inline-block;
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-left: 0.3rem;
+    }
+    .status-asignado {
+      background: #e0e0ff;
+    }
+    .status-en_proceso {
+      background: #fff0c2;
+    }
+    .status-completado {
+      background: #d7ffd7;
+    }
+    .observations {
+      margin-top: 0.3rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid #eee;
+      font-size: 0.8rem;
+    }
+    .observation-item {
+      margin-bottom: 0.25rem;
+    }
+    .calendar {
+      border: 1px solid var(--gris-borde);
+      border-radius: 8px;
+      background: #fff;
+      padding: 0.5rem;
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .calendar-header button {
+      width: auto;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      min-height: 36px;
+    }
+    .calendar-grid {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+    .calendar-grid th,
+    .calendar-grid td {
+      border: 1px solid #eee;
+      padding: 0.25rem;
+      vertical-align: top;
+      height: 54px;
+      width: 14.28%;
+    }
+    .calendar-grid th {
+      background: #f0f0f0;
+      text-align: center;
+      font-size: 0.78rem;
+    }
+    .day-number {
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+    .day-tasks {
+      margin-top: 0.2rem;
+      font-size: 0.68rem;
+    }
+    .day-tasks div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .small-hint {
+      font-size: 0.75rem;
+      color: #777;
+      margin-top: 0.25rem;
+    }
+    ul {
+      padding-left: 1.1rem;
+      margin: 0.4rem 0;
+    }
+    ul li {
+      font-size: 0.85rem;
+      margin-bottom: 0.2rem;
+    }
+
+    /* --- Pestañas --- */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--gris-borde);
+      margin: 0.5rem 0 0.75rem 0;
+      gap: 0.25rem;
+    }
+    .tab-btn {
+      flex: 1;
+      min-width: 120px;
+      background: #eee;
+      color: #333;
+      border-radius: 6px 6px 0 0;
+      border: 1px solid var(--gris-borde);
+      border-bottom: none;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      min-height: 36px;
+    }
+    .tab-btn.active {
+      background: #fff;
+      border-bottom: 1px solid #fff;
+      font-weight: bold;
+      color: var(--rojo);
+    }
+    .tab-panel {
+      display: none;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        padding: 0.6rem 0.5rem;
+      }
+      h1 {
+        font-size: 1rem;
+      }
+      main {
+        padding: 0.5rem;
+      }
+      .card {
+        padding: 0.7rem;
+        border-radius: 6px;
+        margin-bottom: 0.7rem;
+      }
+      .row {
+        flex-direction: column;
+      }
+      .row > div {
+        min-width: 100%;
+      }
+      .tasks-list {
+        max-height: 55vh;
+      }
+      .user-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .calendar {
+        margin-top: 0.5rem;
+      }
+      input, select, button, textarea {
+        font-size: 0.9rem;
+      }
+      .calendar-grid th,
+      .calendar-grid td {
+        height: 50px;
+        padding: 0.2rem;
+      }
+      .tabs {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CEFAPIMALE GESTIÓN - Dashboard de Tareas</h1>
+  </header>
+  <main>
+    <!-- LOGIN -->
+    <div class="card" id="loginCard">
+      <h2>Acceso</h2>
+      <p style="font-size:0.85rem;">
+        <strong>Admin inicial:</strong> usuario <code>admin</code>, contraseña
+        <code>admin123</code><br />
+        <strong>Usuario inicial:</strong> usuario <code>usuario1</code>, contraseña
+        <code>user123</code>
+      </p>
+      <form id="loginForm">
+        <label>Usuario
+          <input type="text" id="username" autocomplete="username" required />
+        </label>
+        <label>Contraseña
+          <input type="password" id="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit">Entrar</button>
+      </form>
+      <p id="loginError" style="color:red;font-size:0.85rem;"></p>
+    </div>
+
+    <!-- APP / DASHBOARD -->
+    <div class="card" id="appCard" style="display:none;">
+      <div class="user-info">
+        <div>
+          <h2>Bienvenido, <span id="currentUserName"></span></h2>
+          <p>
+            Rol:
+            <span id="currentUserRole"></span>
+          </p>
+        </div>
+        <div style="width:100%;max-width:200px;">
+          <button id="logoutBtn" class="btn-sec">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <!-- PESTAÑAS -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="dashboard" id="tab-btn-dashboard">Resumen</button>
+        <button class="tab-btn" data-tab="tasks" id="tab-btn-tasks">Tareas</button>
+        <button class="tab-btn" data-tab="calendar" id="tab-btn-calendar">Calendario</button>
+        <button class="tab-btn" data-tab="admin" id="tab-btn-admin">Administración</button>
+      </div>
+
+      <!-- PANEL: RESUMEN -->
+      <div class="tab-panel" id="tab-dashboard">
+        <h3>Resumen de tareas</h3>
+        <div class="stats" id="statsPanel">
+          <div class="stat-box">
+            <strong id="statTotal">0</strong>
+            <span>Total tareas</span>
+          </div>
+          <div class="stat-box">
+            <strong id="statAsignado">0</strong>
+            <span>Asignadas</span>
+          </div>
+          <div class="stat-box">
+            <strong id="statEnProceso">0</strong>
+            <span>En proceso</span>
+          </div>
+          <div class="stat-box">
+            <strong id="statCompletado">0</strong>
+            <span>Completadas</span>
+          </div>
+        </div>
+        <p class="small-hint" style="margin-top:0.5rem;">
+          Este resumen se actualiza automáticamente cada pocos segundos según el estado de las tareas.
+        </p>
+      </div>
+
+      <!-- PANEL: TAREAS -->
+      <div class="tab-panel" id="tab-tasks">
+        <h3 id="tasksTitle">Tareas</h3>
+        <div class="tasks-list" id="tasksContainer"></div>
+        <p class="small-hint">
+          Aquí puedes ver tus tareas, cambiar estados (si tienes permiso) y añadir observaciones.
+        </p>
+      </div>
+
+      <!-- PANEL: CALENDARIO -->
+      <div class="tab-panel" id="tab-calendar">
+        <h3>Calendario de tareas</h3>
+        <div class="calendar">
+          <div class="calendar-header">
+            <button id="prevMonthBtn">&lt;</button>
+            <div id="calendarMonthLabel" style="font-size:0.9rem;font-weight:bold;"></div>
+            <button id="nextMonthBtn">&gt;</button>
+          </div>
+          <table class="calendar-grid">
+            <thead>
+              <tr>
+                <th>Lun</th>
+                <th>Mar</th>
+                <th>Mié</th>
+                <th>Jue</th>
+                <th>Vie</th>
+                <th>Sáb</th>
+                <th>Dom</th>
+              </tr>
+            </thead>
+            <tbody id="calendarBody"></tbody>
+          </table>
+        </div>
+        <p class="small-hint">
+          Cada día muestra las tareas planificadas con su asignado y estado actual.
+        </p>
+      </div>
+
+      <!-- PANEL: ADMINISTRACIÓN (solo admin) -->
+      <div class="tab-panel" id="tab-admin">
+        <h3>Panel de administración</h3>
+        <div class="row">
+          <!-- Gestión de usuarios -->
+          <div>
+            <h4>Usuarios</h4>
+            <form id="createUserForm">
+              <label>Nuevo usuario
+                <input type="text" id="newUsername" required />
+              </label>
+              <label>Contraseña
+                <input type="password" id="newPassword" required />
+              </label>
+              <label>Rol
+                <select id="newRole" required>
+                  <option value="usuario">Usuario</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
+              <button type="submit">Crear usuario</button>
+            </form>
+            <p id="userMsg"></p>
+            <h5>Lista de usuarios</h5>
+            <ul id="usersList"></ul>
+          </div>
+
+          <!-- Creación de tareas -->
+          <div>
+            <h4>Crear tarea</h4>
+            <form id="createTaskForm">
+              <label>Texto de la tarea
+                <textarea id="taskText" rows="3" required></textarea>
+              </label>
+              <label>Asignar a usuario
+                <select id="taskAssignee" required></select>
+              </label>
+              <label>Fecha (aparece en el calendario)
+                <input type="date" id="taskDate" />
+              </label>
+              <button type="submit">Crear tarea</button>
+            </form>
+            <p id="taskMsg"></p>
+          </div>
+        </div>
+        <p class="small-hint">
+          Desde aquí el administrador gestiona usuarios y crea nuevas tareas.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentUser = null;
+    let tasksCache = [];
+    let currentMonth = null;
+    let currentYear = null;
+
+    // --- Gestión de pestañas ---
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+      const panel = document.getElementById('tab-' + tabId);
+      if (panel) panel.style.display = 'block';
+
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tabId);
+      });
+    }
+
+    // --- Login / sesión ---
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/me');
+        if (!res.ok) {
+          showLogin();
+          return;
+        }
+        const data = await res.json();
+        currentUser = data.user;
+        initDashboard();
+      } catch {
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('loginCard').style.display = 'block';
+      document.getElementById('appCard').style.display = 'none';
+    }
+
+    function showApp() {
+      document.getElementById('loginCard').style.display = 'none';
+      document.getElementById('appCard').style.display = 'block';
+    }
+
+    function initCalendarDate() {
+      const today = new Date();
+      currentMonth = today.getMonth();
+      currentYear = today.getFullYear();
+    }
+
+    function initDashboard() {
+      showApp();
+      document.getElementById('currentUserName').textContent = currentUser.username;
+      document.getElementById('currentUserRole').textContent =
+        currentUser.role === 'admin' ? 'Administrador' : 'Usuario';
+
+      // Control de pestaña de administración
+      const adminTabBtn = document.getElementById('tab-btn-admin');
+      if (currentUser.role === 'admin') {
+        adminTabBtn.style.display = 'inline-block';
+        document.getElementById('tasksTitle').textContent = 'Todas las tareas';
+      } else {
+        adminTabBtn.style.display = 'none';
+        document.getElementById('tasksTitle').textContent = 'Mis tareas asignadas';
+      }
+
+      if (currentMonth === null || currentYear === null) initCalendarDate();
+
+      // Por defecto, pestaña Resumen
+      showTab('dashboard');
+      refreshData();
+    }
+
+    // --- Eventos de login/logout ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorEl = document.getElementById('loginError');
+      errorEl.textContent = '';
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errorEl.textContent = data.error || 'Error de login';
+          return;
+        }
+        currentUser = data.user;
+        initDashboard();
+      } catch {
+        errorEl.textContent = 'Error de conexión';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/logout', { method: 'POST' });
+      currentUser = null;
+      tasksCache = [];
+      showLogin();
+    });
+
+    // --- Admin: usuarios y tareas ---
+    async function loadUsers() {
+      if (!currentUser || currentUser.role !== 'admin') return;
+      const list = document.getElementById('usersList');
+      const select = document.getElementById('taskAssignee');
+      list.innerHTML = '';
+      select.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/users');
+        if (!res.ok) return;
+        const data = await res.json();
+        data.forEach((u) => {
+          const li = document.createElement('li');
+          li.textContent = u.username + ' ';
+          const span = document.createElement('span');
+          span.className = 'tag ' + (u.role === 'admin' ? 'tag-admin' : 'tag-usuario');
+          span.textContent = u.role;
+          li.appendChild(span);
+          list.appendChild(li);
+
+          const opt = document.createElement('option');
+          opt.value = u.id;
+          opt.textContent = u.username + ' (' + u.role + ')';
+          select.appendChild(opt);
+        });
+      } catch {}
+    }
+
+    document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('newUsername').value.trim();
+      const password = document.getElementById('newPassword').value.trim();
+      const role = document.getElementById('newRole').value;
+      const msg = document.getElementById('userMsg');
+      msg.textContent = '';
+
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, role }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          msg.style.color = 'red';
+          msg.textContent = data.error || 'Error al crear usuario';
+        } else {
+          msg.style.color = 'green';
+          msg.textContent = 'Usuario creado correctamente';
+          document.getElementById('createUserForm').reset();
+          loadUsers();
+        }
+      } catch {
+        msg.style.color = 'red';
+        msg.textContent = 'Error de conexión';
+      }
+    });
+
+    document.getElementById('createTaskForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = document.getElementById('taskText').value.trim();
+      const assigneeId = document.getElementById('taskAssignee').value;
+      const date = document.getElementById('taskDate').value;
+      const msg = document.getElementById('taskMsg');
+      msg.textContent = '';
+
+      try {
+        const res = await fetch('/api/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, assigneeId, date }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          msg.style.color = 'red';
+          msg.textContent = data.error || 'Error al crear tarea';
+        } else {
+          msg.style.color = 'green';
+          msg.textContent = 'Tarea creada';
+          document.getElementById('createTaskForm').reset();
+          refreshData();
+        }
+      } catch {
+        msg.style.color = 'red';
+        msg.textContent = 'Error de conexión';
+      }
+    });
+
+    // --- Tareas: carga y render ---
+    async function loadTasks() {
+      if (!currentUser) return;
+      try {
+        const res = await fetch('/api/tasks');
+        if (!res.ok) return;
+        const data = await res.json();
+        tasksCache = data;
+        renderTasks();
+        renderStats();
+        renderCalendar();
+      } catch {}
+    }
+
+    function renderStats() {
+      const total = tasksCache.length;
+      const asignado = tasksCache.filter((t) => t.status === 'asignado').length;
+      const enProceso = tasksCache.filter((t) => t.status === 'en_proceso').length;
+      const completado = tasksCache.filter((t) => t.status === 'completado').length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statAsignado').textContent = asignado;
+      document.getElementById('statEnProceso').textContent = enProceso;
+      document.getElementById('statCompletado').textContent = completado;
+    }
+
+    function statusLabel(status) {
+      if (status === 'asignado') return 'Asignado';
+      if (status === 'en_proceso') return 'En proceso';
+      if (status === 'completado') return 'Completado';
+      return status;
+    }
+
+    function renderTasks() {
+      const cont = document.getElementById('tasksContainer');
+      cont.innerHTML = '';
+      if (!tasksCache || tasksCache.length === 0) {
+        cont.textContent = 'No hay tareas.';
+        return;
+      }
+
+      tasksCache
+        .slice()
+        .sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id)
+        .forEach((t) => {
+          const div = document.createElement('div');
+          div.className = 'task-item';
+
+          const header = document.createElement('div');
+          header.className = 'task-header';
+
+          const left = document.createElement('div');
+          const right = document.createElement('div');
+
+          const title = document.createElement('div');
+          title.className = 'task-text';
+          title.textContent = `#${t.id} - ${t.text}`;
+          left.appendChild(title);
+
+          const meta = document.createElement('div');
+          meta.className = 'task-meta';
+          meta.textContent = `Asignada a: ${t.assigneeName} | Fecha: ${t.date}`;
+          left.appendChild(meta);
+
+          const canChangeStatus =
+            currentUser.role === 'admin' || currentUser.id === t.assigneeId;
+
+          if (canChangeStatus) {
+            const select = document.createElement('select');
+            select.className = 'status-select';
+            select.innerHTML = `
+              <option value="asignado">Asignado</option>
+              <option value="en_proceso">En proceso</option>
+              <option value="completado">Completado</option>
+            `;
+            select.value = t.status;
+            select.onchange = function () {
+              updateTaskStatus(t.id, this.value);
+            };
+            right.appendChild(select);
+          } else {
+            const badge = document.createElement('span');
+            badge.className = 'badge-status status-' + t.status;
+            badge.textContent = statusLabel(t.status);
+            right.appendChild(badge);
+          }
+
+          header.appendChild(left);
+          header.appendChild(right);
+          div.appendChild(header);
+
+          const obsCont = document.createElement('div');
+          obsCont.className = 'observations';
+
+          if (t.observations && t.observations.length > 0) {
+            t.observations.forEach((o) => {
+              const odiv = document.createElement('div');
+              odiv.className = 'observation-item';
+              const date = new Date(o.createdAt).toLocaleString();
+              odiv.textContent = `[${date}] ${o.username}: ${o.text}`;
+              obsCont.appendChild(odiv);
+            });
+          } else {
+            const odiv = document.createElement('div');
+            odiv.className = 'observation-item';
+            odiv.textContent = 'Sin observaciones.';
+            obsCont.appendChild(odiv);
+          }
+
+          const form = document.createElement('form');
+          form.onsubmit = function () {
+            const input = this.querySelector('input');
+            addObservation(t.id, input.value);
+            input.value = '';
+            return false;
+          };
+          const label = document.createElement('label');
+          label.textContent = 'Añadir observación:';
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = 'Escribe tu observación...';
+          label.appendChild(input);
+          const btn = document.createElement('button');
+          btn.type = 'submit';
+          btn.textContent = 'Añadir';
+          form.appendChild(label);
+          form.appendChild(btn);
+
+          obsCont.appendChild(form);
+          div.appendChild(obsCont);
+          cont.appendChild(div);
+        });
+    }
+
+    async function updateTaskStatus(taskId, status) {
+      try {
+        const res = await fetch(`/api/tasks/${taskId}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        });
+        const data = await res.json();
+        if (!res.ok) alert(data.error || 'Error al actualizar estado');
+        else refreshData();
+      } catch {
+        alert('Error de conexión al actualizar estado');
+      }
+    }
+
+    async function addObservation(taskId, text) {
+      if (!text || text.trim() === '') return;
+      try {
+        const res = await fetch(`/api/tasks/${taskId}/observations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
+        });
+        const data = await res.json();
+        if (!res.ok) alert(data.error || 'Error al añadir observación');
+        else refreshData();
+      } catch {
+        alert('Error de conexión al añadir observación');
+      }
+    }
+
+    // --- Calendario ---
+    function renderCalendar() {
+      const body = document.getElementById('calendarBody');
+      const label = document.getElementById('calendarMonthLabel');
+      body.innerHTML = '';
+
+      const monthNames = [
+        'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+        'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+      ];
+
+      label.textContent = monthNames[currentMonth] + ' ' + currentYear;
+
+      const firstDay = new Date(currentYear, currentMonth, 1);
+      let startWeekDay = firstDay.getDay();
+      startWeekDay = (startWeekDay + 6) % 7; // 0 = lunes
+
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+      const tasksByDate = {};
+      tasksCache.forEach((t) => {
+        if (!t.date) return;
+        if (!tasksByDate[t.date]) tasksByDate[t.date] = [];
+        tasksByDate[t.date].push(t);
+      });
+
+      let day = 1;
+      for (let row = 0; row < 6; row++) {
+        const tr = document.createElement('tr');
+        for (let col = 0; col < 7; col++) {
+          const td = document.createElement('td');
+          if (row === 0 && col < startWeekDay) {
+            // celdas vacías
+          } else if (day > daysInMonth) {
+            // fin de mes
+          } else {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day-number';
+            dayDiv.textContent = day;
+            td.appendChild(dayDiv);
+
+            const dayTasksDiv = document.createElement('div');
+            dayTasksDiv.className = 'day-tasks';
+
+            const dateKey =
+              currentYear +
+              '-' +
+              String(currentMonth + 1).padStart(2, '0') +
+              '-' +
+              String(day).padStart(2, '0');
+
+            const ts = tasksByDate[dateKey] || [];
+            ts.forEach((t) => {
+              const tdiv = document.createElement('div');
+              tdiv.textContent = '#' + t.id + ' ' + t.assigneeName + ' (' + statusLabel(t.status) + ')';
+              dayTasksDiv.appendChild(tdiv);
+            });
+
+            td.appendChild(dayTasksDiv);
+            day++;
+          }
+          tr.appendChild(td);
+        }
+        body.appendChild(tr);
+        if (day > daysInMonth) break;
+      }
+    }
+
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    });
+
+    // --- Refresco "en tiempo real" (polling) ---
+    async function refreshData() {
+      if (currentUser && currentUser.role === 'admin') loadUsers();
+      loadTasks();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // listeners pestañas
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+          // impedir que un usuario normal abra admin (por si acaso)
+          if (tabId === 'admin' && currentUser && currentUser.role !== 'admin') return;
+          showTab(tabId);
+        });
+      });
+
+      checkSession();
+
+      setInterval(() => {
+        if (currentUser) refreshData();
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
